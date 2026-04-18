@@ -24,7 +24,11 @@ export type PromoDiscountModalProps = {
   helper?: string;
   smallPrint?: string;
   ctaLabel?: string;
-  /** Broadcast radius in meters. Defaults to 800. */
+  /**
+   * Broadcast radius in meters. Defaults to 50 km so MVP demos reach
+   * any user within the wider metro area regardless of where the
+   * shopkeeper physically sits vs the tester's GPS.
+   */
   radiusM?: number;
 };
 
@@ -45,7 +49,7 @@ export function PromoDiscountModal({
   helper = "Elije el porcentaje a aplicar:",
   smallPrint = "El descuento aplicado será asumido por tu tienda.",
   ctaLabel = "Empezar",
-  radiusM = 800,
+  radiusM = 50_000,
 }: PromoDiscountModalProps) {
   return (
     <Modal open={open} onClose={onClose} title="Promos">
