@@ -12,6 +12,9 @@ export type { CardProps } from "./Card";
 export { PeopleStack } from "./PeopleStack";
 export type { PeopleStackProps } from "./PeopleStack";
 
+export { PromoHistoryItem } from "./PromoHistoryItem";
+export type { PromoHistoryItemProps } from "./PromoHistoryItem";
+
 export { QuickAction } from "./QuickAction";
 export type { QuickActionProps } from "./QuickAction";
 

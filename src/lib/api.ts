@@ -42,12 +42,28 @@ export async function upsertBusiness(
   return business;
 }
 
+export type CreateCampaignResult = {
+  campaign: Campaign;
+  /** How many nearby users had an open EventSource at broadcast time. */
+  delivered: number;
+};
+
 export async function createCampaign(
   input: CreateCampaignInput,
-): Promise<Campaign> {
-  const { campaign } = await request<{ campaign: Campaign }>("/campaigns", {
+): Promise<CreateCampaignResult> {
+  return request<CreateCampaignResult>("/campaigns", {
     method: "POST",
     body: JSON.stringify(input),
   });
-  return campaign;
+}
+
+export type BusinessCampaign = Campaign & { isActive: boolean };
+
+export async function listBusinessCampaigns(
+  businessId: string,
+): Promise<BusinessCampaign[]> {
+  const { campaigns } = await request<{ campaigns: BusinessCampaign[] }>(
+    `/businesses/${encodeURIComponent(businessId)}/campaigns`,
+  );
+  return campaigns;
 }

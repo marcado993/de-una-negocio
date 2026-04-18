@@ -8,11 +8,12 @@ import {
   Button,
   Card,
   PeopleStack,
+  PromoLaunchedModal,
   StatsChart,
 } from "@/components/deuna";
 import { useEffectiveLocation } from "@/hooks/use-effective-location";
 import { createCampaign, upsertBusiness } from "@/lib/api";
-import type { CampaignType } from "@/lib/api-types";
+import type { Campaign, CampaignType } from "@/lib/api-types";
 import { LA_VICENTINA, SEED_BUSINESS } from "@/lib/seed-location";
 
 /** Catalogue mirrored from `deuna-api/src/types.ts::CAMPAIGN_CATALOGUE`.
@@ -71,6 +72,13 @@ function AlcanceContent() {
 
   const [launching, setLaunching] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [launched, setLaunched] = useState<
+    | {
+        campaign: Campaign;
+        deliveredNow: number;
+      }
+    | null
+  >(null);
 
   const estimate = useMemo(() => {
     if (!isCampaignType(campaignId)) return DEFAULT_ESTIMATE;
@@ -92,12 +100,12 @@ function AlcanceContent() {
         barrio: SEED_BUSINESS.barrio,
         location: effective.location,
       });
-      await createCampaign({
+      const result = await createCampaign({
         businessId: business.id,
         type: campaignId,
         radiusM: 800,
       });
-      router.push("/?campaign=launched");
+      setLaunched({ campaign: result.campaign, deliveredNow: result.delivered });
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "No pudimos lanzar la campaña.";
@@ -198,6 +206,23 @@ function AlcanceContent() {
           />
         </div>
       </div>
+
+      <PromoLaunchedModal
+        visible={launched !== null}
+        campaignTitle={launched?.campaign.title ?? ""}
+        reachPeople={launched?.campaign.reachPeople ?? 0}
+        radiusM={launched?.campaign.radiusM ?? 0}
+        deliveredNow={launched?.deliveredNow ?? 0}
+        onClose={() => setLaunched(null)}
+        onCreateAnother={() => {
+          setLaunched(null);
+          router.push("/promociones");
+        }}
+        onViewHistory={() => {
+          setLaunched(null);
+          router.push("/promociones/historial");
+        }}
+      />
     </>
   );
 }
