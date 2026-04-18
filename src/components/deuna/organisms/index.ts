@@ -11,3 +11,15 @@ export type { CobrarPanelProps } from "./CobrarPanel";
 
 export { GestionarPanel } from "./GestionarPanel";
 export type { GestionarPanelProps } from "./GestionarPanel";
+
+export { Modal } from "./Modal";
+export type { ModalProps } from "./Modal";
+
+export { PromoDiscountModal } from "./PromoDiscountModal";
+export type {
+  PromoDiscountModalProps,
+  PromoDiscountPayload,
+} from "./PromoDiscountModal";
+
+export { SalesStatsModal } from "./SalesStatsModal";
+export type { SalesStatsModalProps } from "./SalesStatsModal";

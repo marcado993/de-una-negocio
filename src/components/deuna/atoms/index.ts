@@ -31,6 +31,9 @@ export type { InputProps } from "./Input";
 export { NumericKey } from "./NumericKey";
 export type { NumericKeyProps } from "./NumericKey";
 
+export { PercentOption } from "./PercentOption";
+export type { PercentOptionProps } from "./PercentOption";
+
 export { ProgressBar } from "./ProgressBar";
 export type { ProgressBarProps } from "./ProgressBar";
 

@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
 
 import { cn } from "@/lib/cn";
 import { Card } from "./Card";
@@ -13,6 +16,9 @@ export type NewsCardProps = {
   logoSrc?: string;
   logoAlt?: string;
   tone?: NewsCardTone;
+  /** When provided, the card renders as an anchor. Mutually exclusive with `onPress`. */
+  href?: string;
+  onPress?: () => void;
   className?: string;
 };
 
@@ -26,8 +32,8 @@ const toneMap: Record<NewsCardTone, string> = {
 /**
  * Molecule — compact "Novedades" card. Square-ish tile with a short
  * headline on top and a brand lockup (text or image) anchored to the
- * bottom-left. Several tones keep a carousel visually varied without
- * each consumer re-stringing palette classes.
+ * bottom-left. Passing `href` / `onPress` promotes it to a tappable
+ * surface (used for the "Lanzar Promociones" shortcut on Gestionar).
  */
 export function NewsCard({
   title,
@@ -35,18 +41,12 @@ export function NewsCard({
   logoSrc,
   logoAlt,
   tone = "teal",
+  href,
+  onPress,
   className,
 }: NewsCardProps) {
-  return (
-    <Card
-      variant="flat"
-      padding="md"
-      className={cn(
-        "flex h-[130px] w-full flex-col justify-between",
-        toneMap[tone],
-        className,
-      )}
-    >
+  const body = (
+    <>
       <p className="text-[13px] font-semibold leading-tight">{title}</p>
       <div className="flex items-center">
         {logoSrc ? (
@@ -63,6 +63,41 @@ export function NewsCard({
           </span>
         ) : null}
       </div>
+    </>
+  );
+
+  const cardClassName = cn(
+    "flex h-[130px] w-full flex-col justify-between",
+    toneMap[tone],
+    (href || onPress) && "cursor-pointer transition-opacity active:opacity-85",
+    className,
+  );
+
+  if (href) {
+    return (
+      <Link href={href} className="block">
+        <Card variant="flat" padding="md" className={cardClassName}>
+          {body}
+        </Card>
+      </Link>
+    );
+  }
+  if (onPress) {
+    return (
+      <button
+        type="button"
+        onClick={onPress}
+        className="block w-full text-left"
+      >
+        <Card variant="flat" padding="md" className={cardClassName}>
+          {body}
+        </Card>
+      </button>
+    );
+  }
+  return (
+    <Card variant="flat" padding="md" className={cardClassName}>
+      {body}
     </Card>
   );
 }
