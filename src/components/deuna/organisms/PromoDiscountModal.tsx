@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 import { createCampaign, upsertBusiness } from "@/lib/api";
 import { celebrate } from "@/lib/confetti";
@@ -19,6 +19,12 @@ export type PromoDiscountModalProps = {
   onClose: () => void;
   brand?: string;
   bannerImageSrc?: string;
+  /**
+   * Heading rendered on the right half of the banner. Defaults to the
+   * YaPass copy in the mockup ("Crea descuentos para tus clientes
+   * con YaPass").
+   */
+  bannerHeading?: ReactNode;
   options?: readonly number[];
   title?: string;
   helper?: string;
@@ -39,11 +45,26 @@ export type PromoDiscountModalProps = {
  * state with the real delivered count. Closing the modal resets
  * everything, because the inner content only mounts while `open`.
  */
+const DEFAULT_BANNER_HEADING: ReactNode = (
+  <>
+    Crea
+    <br />
+    descuentos
+    <br />
+    para tus
+    <br />
+    clientes con
+    <br />
+    YaPass
+  </>
+);
+
 export function PromoDiscountModal({
   open,
   onClose,
-  brand = "Netlife",
-  bannerImageSrc = "/assets/mascota.png",
+  brand = "YaPass",
+  bannerImageSrc = "/sale.png",
+  bannerHeading = DEFAULT_BANNER_HEADING,
   options = [5, 10, 15],
   title = "Aplica un descuento al Total",
   helper = "Elije el porcentaje a aplicar:",
@@ -58,6 +79,7 @@ export function PromoDiscountModal({
           onClose={onClose}
           brand={brand}
           bannerImageSrc={bannerImageSrc}
+          bannerHeading={bannerHeading}
           options={options}
           title={title}
           helper={helper}
@@ -74,6 +96,7 @@ type PromoDiscountContentProps = {
   onClose: () => void;
   brand: string;
   bannerImageSrc: string;
+  bannerHeading: ReactNode;
   options: readonly number[];
   title: string;
   helper: string;
@@ -91,6 +114,7 @@ function PromoDiscountContent({
   onClose,
   brand,
   bannerImageSrc,
+  bannerHeading,
   options,
   title,
   helper,
@@ -168,7 +192,12 @@ function PromoDiscountContent({
   return (
     <div className="flex min-h-full flex-col">
       <div className="flex flex-1 flex-col gap-4 px-4 pt-3">
-        <PromoBanner brand={brand} imageSrc={bannerImageSrc} />
+        <PromoBanner
+          brand={brand}
+          imageSrc={bannerImageSrc}
+          heading={bannerHeading}
+          tone="lavender"
+        />
 
         <div className="flex flex-col gap-1">
           <h3 className="text-title-md text-primary">{title}</h3>
