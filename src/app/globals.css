@@ -1,26 +1,174 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/**
+ * Deuna Negocios design tokens.
+ *
+ * Inherits the YaPass palette (purple primary + lavender softs) and
+ * adds a few business-oriented tones used by the Promociones module:
+ *   - accent-green:   positive amounts, "% off" pill
+ *   - accent-yellow / pink / coral: playful illustration accents
+ *     (bar chart, emojis, celebratory highlights)
+ *
+ * Tailwind v4 `@theme` exposes each CSS variable as a utility (e.g.
+ * `bg-primary`, `text-accent-green`, `rounded-lg`). Change a token here
+ * to re-brand the whole app.
+ */
+@theme {
+  --color-primary: #4b1d8c;
+  --color-primary-dark: #3a1370;
+  --color-primary-light: #7a4ec7;
+  --color-primary-soft: #efe7f7;
+  --color-primary-softer: #f8f4fb;
+
+  --color-ink: #1c1c1c;
+  --color-text-primary: #1c1c1c;
+  --color-text-secondary: #6b6b6b;
+  --color-text-muted: #9a9aa0;
+
+  --color-divider: #ececef;
+  --color-line: #e6e6ea;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f6f6f8;
+  --color-background: #f1f1f3;
+
+  /* Promociones / business-owner accents */
+  --color-accent-green: #22c55e;
+  --color-accent-green-soft: #e8faef;
+  --color-accent-yellow: #f4c542;
+  --color-accent-pink: #ef6e8f;
+  --color-accent-coral: #f07a53;
+  --color-accent-mint: #8ed9b8;
+
+  --color-success: #1fc9b6;
+  --color-warning: #f4b740;
+  --color-danger: #e0543b;
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 22px;
+
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-elevated: 0 8px 18px rgba(0, 0, 0, 0.12);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/**
+ * Typography scale — semantic utilities that bundle size + line-height
+ * + weight + color so components tag text by its role instead of
+ * re-stringing Tailwind classes.
+ */
+@utility text-display-lg {
+  font-size: 32px;
+  line-height: 38px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+@utility text-title-lg {
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+@utility text-title-md {
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+@utility text-title-sm {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+@utility text-body-lg {
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+}
+@utility text-body {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+}
+@utility text-body-sm {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+@utility text-caption {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+@utility text-label-button {
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/**
+ * Campaign card — lavender chip with mascot on the right. A subtle
+ * radial accent on the top-right corner mimics a spotlight on the
+ * mascot when the card is selected.
+ */
+@keyframes dn-card-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(75, 29, 140, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(75, 29, 140, 0.12);
+  }
+}
+
+/**
+ * Bar-chart illustration — the colorful bars on the Alcance screen use
+ * this keyframe to "grow" from 0 when the component mounts.
+ */
+@keyframes dn-bar-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes dn-star-twinkle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.85) rotate(8deg);
+  }
 }

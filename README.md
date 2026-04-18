@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Deuna Negocios
 
-## Getting Started
+Web app Next.js 16 para dueñ@s de negocios de barrio. En este primer pase sólo
+está implementado el módulo **Promociones** (lanzar campañas de descuentos y
+ver el alcance estimado). Inspirado en la estética de YaPass.
 
-First, run the development server:
+## Pantallas
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+| Ruta | Estado | Descripción |
+| --- | --- | --- |
+| `/` | stub | Inicio (balance + accesos rápidos) — pendiente |
+| `/mi-caja` | stub | Teclado + QR de cobro — pendiente |
+| **`/promociones`** | ✅ | Lanza Tu Próxima Campaña (4 tipos a elegir) |
+| **`/promociones/alcance`** | ✅ | Alcance De Tu Campaña (estadísticas + estimación) |
+| `/tu` | stub | Perfil del administrador |
+
+## Atomic Design
+
+```
+src/components/deuna/
+  atoms/       → AmountText · Avatar · Badge · BusinessMascot · Button
+                 Divider · Emoji · IconButton · Input · PercentPill
+                 ProgressBar · SpinnerRing
+  molecules/   → CampaignTypeCard · Card · PeopleStack · StatsChart
+  organisms/   → BusinessHeader · PopupModal
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Los tokens de color viven en `src/app/globals.css` (`@theme`). Cambiar
+`--color-primary` re-brandea toda la app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## PNGs pendientes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Los siguientes slots ya están cableados y aceptan `src` — basta con dejar los
+PNG en `public/assets/` y pasar la ruta:
 
-## Learn More
+1. **Mascota con canasta** (`<BusinessMascot src="/assets/mascot-basket.png" />`)
+2. **Gráfico de estadísticas** (`<StatsChart src="/assets/stats-hero.png" />`)
+3. **Pirámide de personas** (`<PeopleStack src="/assets/people-stack.png" />`)
 
-To learn more about Next.js, take a look at the following resources:
+Sin los PNGs se muestran fallbacks SVG inline.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Dev
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm install
+npm run dev    # http://localhost:3000
+npm run build  # producción
+npm run lint
+```
