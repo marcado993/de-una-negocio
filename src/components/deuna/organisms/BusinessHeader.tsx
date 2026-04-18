@@ -56,7 +56,7 @@ export function BusinessHeader({
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-center gap-2">
           <span className="truncate text-title-sm text-primary">
-            ¡Hola! {ownerName}
+            Hola, {ownerName}
           </span>
           {ownerRole ? (
             <span className="rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-semibold text-primary">

@@ -33,7 +33,7 @@ export default function InicioScreen() {
   return (
     <div className="flex flex-col pt-[max(env(safe-area-inset-top),0.5rem)]">
       <BusinessHeader
-        ownerName="Julian"
+        ownerName="Samira"
         ownerRole="Admin"
         businessName="Yapass"
       />

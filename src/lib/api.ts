@@ -7,11 +7,13 @@ import type {
 
 /**
  * Base URL of the realtime backend. Resolved at build time via the
- * `NEXT_PUBLIC_API_URL` env var (set in Vercel for production; set in
- * `.env.local` to `http://localhost:4000` for local dev).
+ * `NEXT_PUBLIC_API_URL` env var. Falls back to the production Fly.io
+ * URL so `npm run dev` works out of the box without extra setup; set
+ * `NEXT_PUBLIC_API_URL=http://localhost:4000` in `.env.local` when
+ * working against a local backend.
  */
 export const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+  process.env.NEXT_PUBLIC_API_URL ?? "https://deuna-api-marcado993.fly.dev";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {

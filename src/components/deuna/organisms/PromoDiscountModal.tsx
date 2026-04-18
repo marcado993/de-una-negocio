@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, type MouseEvent } from "react";
+import { useState } from "react";
 
 import type { Campaign } from "@/lib/api-types";
 import { createCampaign, upsertBusiness } from "@/lib/api";
-import { celebrate, spark } from "@/lib/confetti";
+import { celebrate } from "@/lib/confetti";
 import { LA_VICENTINA, SEED_BUSINESS } from "@/lib/seed-location";
 
 import { Button } from "../atoms/Button";
@@ -92,18 +92,6 @@ type PromoDiscountContentProps = Required<
   >
 >;
 
-/** Resolves a normalized confetti origin from a click event. Returns
- *  `undefined` if coords look bogus so the helper falls back to its
- *  default center burst. */
-function originFromClick(event: MouseEvent): { x: number; y: number } | undefined {
-  if (typeof window === "undefined") return undefined;
-  const { clientX, clientY } = event;
-  const w = window.innerWidth || 1;
-  const h = window.innerHeight || 1;
-  if (!Number.isFinite(clientX) || !Number.isFinite(clientY)) return undefined;
-  return { x: clientX / w, y: clientY / h };
-}
-
 function PromoDiscountContent({
   onConfirm,
   brand,
@@ -134,13 +122,12 @@ function PromoDiscountContent({
 
   const disabled = effectivePct === null || loading;
 
-  const handleChoice = (next: PercentChoice, event?: MouseEvent): void => {
+  const handleChoice = (next: PercentChoice): void => {
     setChoice(next);
     setError(null);
-    spark(event ? originFromClick(event) : undefined);
   };
 
-  const handleConfirm = async (event: MouseEvent): Promise<void> => {
+  const handleConfirm = async (): Promise<void> => {
     if (effectivePct === null || loading) return;
     setError(null);
     setLoading(true);
@@ -161,9 +148,11 @@ function PromoDiscountContent({
       });
       onConfirm({ campaign, delivered, percent: effectivePct });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Error de red";
-      setError(msg);
-      void event;
+      const raw = err instanceof Error ? err.message : String(err);
+      const friendly = /failed to fetch|networkerror/i.test(raw)
+        ? "No hay conexión con el servidor"
+        : raw;
+      setError(friendly);
     } finally {
       setLoading(false);
     }
@@ -207,7 +196,6 @@ function PromoDiscountContent({
                 onChange={(e) => {
                   const raw = e.target.value.replace(/[^0-9]/g, "").slice(0, 2);
                   setOtherPct(raw);
-                  if (raw.length > 0) spark();
                 }}
                 placeholder="Ej. 7"
                 className="w-full bg-transparent text-[28px] font-extrabold text-text-primary outline-none placeholder:text-text-muted"
