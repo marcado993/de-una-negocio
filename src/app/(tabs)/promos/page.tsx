@@ -25,8 +25,8 @@ function pickDemoReach(): number {
 }
 
 /**
- * Promos — full-screen tab that lets the shopkeeper pick a discount
- * percentage and broadcast it to nearby YaPass users.
+ * Promos — full-screen tab that lets the shopkeeper pick a cashback
+ * amount and broadcast it to nearby YaPass users.
  *
  * Mirrors the previous `PromoDiscountModal` flow but as a real route
  * so the bottom Beneficios tab can open it directly. Closing/back
@@ -35,12 +35,12 @@ function pickDemoReach(): number {
 export default function PromosScreen() {
   const router = useRouter();
   const [choice, setChoice] = useState<PercentChoice | null>(null);
-  const [otherPct, setOtherPct] = useState("");
+  const [otherAmount, setOtherAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [delivered, setDelivered] = useState<number | null>(null);
 
-  const parsedOther = Number(otherPct);
+  const parsedOther = Number(otherAmount);
   const effectivePct =
     choice === "other"
       ? Number.isFinite(parsedOther) && parsedOther >= 1 && parsedOther <= 99
@@ -110,12 +110,13 @@ export default function PromosScreen() {
           Aplica un descuento al Total
         </h1>
         <p className="text-[14px] font-medium text-text-primary">
-          Elije el porcentaje a aplicar:
+          Elije el cashback a aplicar:
         </p>
 
         <PercentGrid
           options={[5, 10, 15]}
           value={choice}
+          valueSuffix=""
           onChange={(c) => {
             setChoice(c);
             setError(null);
@@ -128,7 +129,7 @@ export default function PromosScreen() {
               htmlFor="promo-other-pct"
               className="text-[12px] font-semibold text-primary"
             >
-              Ingresa el porcentaje (1–99)
+              Ingresa el cashback (1–99)
             </label>
             <div className="flex items-baseline gap-2">
               <input
@@ -138,18 +139,18 @@ export default function PromosScreen() {
                 inputMode="numeric"
                 min={1}
                 max={99}
-                value={otherPct}
+                value={otherAmount}
                 onChange={(e) => {
                   const raw = e.target.value
                     .replace(/[^0-9]/g, "")
                     .slice(0, 2);
-                  setOtherPct(raw);
+                  setOtherAmount(raw);
                 }}
                 placeholder="Ej. 7"
                 className="w-full bg-transparent text-[24px] font-extrabold text-text-primary outline-none placeholder:text-text-muted"
               />
-              <span className="text-[22px] font-extrabold text-text-primary">
-                %
+              <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-text-secondary">
+                cashback
               </span>
             </div>
           </div>

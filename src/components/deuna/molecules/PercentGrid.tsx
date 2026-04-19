@@ -7,7 +7,7 @@ import { PercentOption } from "../atoms/PercentOption";
 export type PercentChoice = number | "other";
 
 export type PercentGridProps = {
-  /** Discount percentages rendered in-order before the "OTRO" cell. */
+  /** Values rendered in-order before the "OTRO" cell. */
   options?: readonly number[];
   value: PercentChoice | null;
   /** Called with the new choice and, when available, the underlying
@@ -19,6 +19,8 @@ export type PercentGridProps = {
   ) => void;
   /** Label of the fallback cell. Defaults to "OTRO". */
   otherLabel?: string;
+  /** Suffix appended to numeric options. Defaults to "%" (discount). */
+  valueSuffix?: string;
 };
 
 /**
@@ -32,13 +34,14 @@ export function PercentGrid({
   value,
   onChange,
   otherLabel = "OTRO",
+  valueSuffix = "%",
 }: PercentGridProps) {
   return (
     <div className="grid grid-cols-2 gap-3">
       {options.map((pct) => (
         <PercentOption
           key={pct}
-          label={`${pct}%`}
+          label={`${pct}${valueSuffix}`}
           selected={value === pct}
           onClick={(e) => onChange(pct, e)}
         />
