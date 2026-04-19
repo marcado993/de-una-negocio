@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   IoArrowDownOutline,
   IoArrowUpOutline,
@@ -11,31 +11,24 @@ import {
 import { BalanceCard } from "../molecules/BalanceCard";
 import { NewsCard } from "../molecules/NewsCard";
 import { QuickAction } from "../molecules/QuickAction";
-import { PromoDiscountModal } from "./PromoDiscountModal";
-import { SalesStatsModal } from "./SalesStatsModal";
 
 export type GestionarPanelProps = {
   balance?: number;
   pending?: number;
 };
 
-/** Which of the independent modals is currently visible. `promo` owns
- *  the full launch flow end-to-end (including its own success state);
- *  `stats` is a read-only analytics view. Only one can be open at a
- *  time. */
-type ActiveModal = "none" | "promo" | "stats";
-
 /**
  * Organism — Gestionar panel: balance card, quick-action grid and a
  * horizontal "Novedades" carousel. Each news card is an independent
- * entry point; there's no forced progression between launching a
- * promo and checking stats.
+ * entry point that deep-links into a dedicated route (`/promos`,
+ * `/estadisticas`, `/desafios`); the panel itself is purely
+ * presentational now that the flows live as full screens.
  */
 export function GestionarPanel({
   balance = 0,
   pending,
 }: GestionarPanelProps = {}) {
-  const [modal, setModal] = useState<ActiveModal>("none");
+  const router = useRouter();
 
   return (
     <div className="flex flex-col gap-5 px-4 pt-2 pb-4">
@@ -80,6 +73,34 @@ export function GestionarPanel({
           className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-1"
           role="list"
         >
+          {/* Real, navegables: van primero porque son los flows
+              implementados que el shopkeeper va a usar día a día. */}
+          <div role="listitem" className="w-[150px] shrink-0">
+            <NewsCard
+              tone="teal"
+              title="Lanzar Promociones"
+              brand="deuna!"
+              onPress={() => router.push("/promos")}
+            />
+          </div>
+          <div role="listitem" className="w-[150px] shrink-0">
+            <NewsCard
+              tone="teal"
+              title="Estadísticas"
+              brand="deuna!"
+              onPress={() => router.push("/estadisticas")}
+            />
+          </div>
+          <div role="listitem" className="w-[150px] shrink-0">
+            <NewsCard
+              tone="teal"
+              title="Desafíos y Premios"
+              brand="deuna!"
+              onPress={() => router.push("/desafios")}
+            />
+          </div>
+          {/* Placeholders del mockup original — sin handler aún, se
+              quedan al final hasta que tengan pantalla propia. */}
           <div role="listitem" className="w-[150px] shrink-0">
             <NewsCard
               tone="teal"
@@ -94,34 +115,8 @@ export function GestionarPanel({
               brand="deuna!"
             />
           </div>
-          <div role="listitem" className="w-[150px] shrink-0">
-            <NewsCard
-              tone="teal"
-              title="Lanzar Promociones"
-              brand="deuna!"
-              onPress={() => setModal("promo")}
-            />
-          </div>
-          <div role="listitem" className="w-[150px] shrink-0">
-            <NewsCard
-              tone="teal"
-              title="Estadísticas"
-              brand="deuna!"
-              onPress={() => setModal("stats")}
-            />
-          </div>
         </div>
       </section>
-
-      <PromoDiscountModal
-        open={modal === "promo"}
-        onClose={() => setModal("none")}
-      />
-
-      <SalesStatsModal
-        open={modal === "stats"}
-        onClose={() => setModal("none")}
-      />
     </div>
   );
 }
