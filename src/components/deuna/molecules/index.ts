@@ -13,7 +13,11 @@ export { Card } from "./Card";
 export type { CardProps } from "./Card";
 
 export { NewsCard } from "./NewsCard";
-export type { NewsCardProps, NewsCardTone } from "./NewsCard";
+export type {
+  NewsCardOrientation,
+  NewsCardProps,
+  NewsCardTone,
+} from "./NewsCard";
 
 export { NumericKeypad } from "./NumericKeypad";
 export type { NumericKeypadProps } from "./NumericKeypad";
