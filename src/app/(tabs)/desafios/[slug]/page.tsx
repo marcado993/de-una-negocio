@@ -46,17 +46,15 @@ const DESAFIOS: Record<DesafioSlug, DesafioContent> = {
     ],
   },
   tres: {
-    title: "Publicidad Gratis",
-    intro:
-      "Mantente en el top #1 y tu negocio será recomendado a los usuarios.",
-    deadlineLabel: "Finaliza:",
-    deadline: "El 19 de Mayo de 2026.",
+    title: "Compra Más de Dos Veces",
+    intro: "Realiza compras separadas en el mismo comercio participante.",
+    deadlineLabel: "Vigencia:",
+    deadline: "Del 1 al 31 de mayo de 2026.",
     stepsLabel: "Cómo acceder a la promoción:",
     steps: [
-      "Realiza ventas durante un mes",
-      "Si varios usuarios visitan seguido tu tienda, entrarás en favoritos",
-      "Entre más usuarios logres que te tengan como tienda favorita tienes más oportunidades.",
-      "Si al finalizar el tiempo, quedas primero, ganas.",
+      "Realiza una compra en tu tienda favorita participante.",
+      "Repite la compra dos veces más en la misma tienda.",
+      "Tu recompensa se emitirá automáticamente.",
     ],
   },
 };

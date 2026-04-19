@@ -87,13 +87,14 @@ export default function PromosScreen() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-white">
       <HeroBanner
         imageSrc="/assets/promos/caserito-oferta.png"
         imageAlt="Mascota Deuna con cartel SALE"
-        imageWidth={145}
-        imageHeight={167}
-        height={202}
+        imageWidth={132}
+        imageHeight={146}
+        height={176}
+        sticky={false}
         onBack={() => router.back()}
         title={
           <>
@@ -104,7 +105,7 @@ export default function PromosScreen() {
       />
 
       {/* Picker */}
-      <div className="flex flex-1 flex-col gap-4 px-4 pt-6">
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden px-4 pt-4">
         <h1 className="text-title-md text-primary">
           Aplica un descuento al Total
         </h1>
@@ -145,25 +146,21 @@ export default function PromosScreen() {
                   setOtherPct(raw);
                 }}
                 placeholder="Ej. 7"
-                className="w-full bg-transparent text-[28px] font-extrabold text-text-primary outline-none placeholder:text-text-muted"
+                className="w-full bg-transparent text-[24px] font-extrabold text-text-primary outline-none placeholder:text-text-muted"
               />
-              <span className="text-[24px] font-extrabold text-text-primary">
+              <span className="text-[22px] font-extrabold text-text-primary">
                 %
               </span>
             </div>
           </div>
         ) : null}
 
-        <p className="px-1 text-center text-[14px] font-medium text-text-primary">
+        <p className="px-1 text-center text-[13px] font-medium text-text-primary">
           El descuento aplicado será asumido por tu tienda.
         </p>
       </div>
 
-      {/* Fixed CTA — Promos is full-bleed (no tab bar), so the button
-          pins to the real viewport bottom. `sticky bottom-0` keeps it
-          visible no matter how the content above scrolls, and the
-          safe-area padding clears the iOS home indicator. */}
-      <div className="sticky bottom-0 mt-4 flex flex-col gap-2 border-t border-divider bg-surface-alt px-4 pt-3 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
+      <div className="mt-auto flex shrink-0 flex-col gap-2 border-t border-divider bg-surface-alt px-4 py-3 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
         {error ? (
           <p
             role="alert"
@@ -172,7 +169,7 @@ export default function PromosScreen() {
             No se pudo lanzar la promo: {error}. Intentá de nuevo.
           </p>
         ) : null}
-        <p className="text-center text-[11px] text-text-secondary">
+        <p className="text-center text-[11px] leading-tight text-text-secondary">
           Al presionar &quot;Empezar&quot; aceptas los{" "}
           <span className="font-bold text-primary underline underline-offset-2">
             Términos y condiciones

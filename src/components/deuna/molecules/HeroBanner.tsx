@@ -34,6 +34,12 @@ export type HeroBannerProps = {
    * the bottom Beneficios tab is the navigation source.
    */
   onBack?: () => void;
+  /**
+   * Whether the banner should stay pinned while the content below scrolls.
+   * Defaults to `true` (used by feed-like screens). Promos disables it
+   * to avoid any sticky + viewport overflow quirks on mobile.
+   */
+  sticky?: boolean;
   className?: string;
 };
 
@@ -54,6 +60,7 @@ export function HeroBanner({
   imageHeight = 167,
   height = 180,
   onBack,
+  sticky = true,
   className,
 }: HeroBannerProps) {
   return (
@@ -61,7 +68,8 @@ export function HeroBanner({
       aria-label={typeof title === "string" ? title : undefined}
       style={{ height }}
       className={cn(
-        "sticky top-0 z-20 w-full shrink-0 overflow-hidden",
+        sticky ? "sticky top-0 z-20" : "relative z-10",
+        "w-full shrink-0 overflow-hidden",
         "bg-linear-to-b from-[#f6eeff] to-[#e7dcf2]",
         "pt-[max(env(safe-area-inset-top),0.5rem)]",
         className,
