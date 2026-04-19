@@ -52,7 +52,7 @@ export default function EstadisticasScreen() {
         </Card>
       </div>
 
-      <div className="sticky bottom-(--app-bottom-nav-height) mt-4 border-t border-divider bg-surface-alt px-4 py-3">
+      <div className="sticky bottom-0 mt-4 border-t border-divider bg-surface-alt px-4 pt-3 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
         <Button label="Volver" size="lg" onClick={() => router.back()} />
       </div>
     </div>

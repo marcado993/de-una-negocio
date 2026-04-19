@@ -2,46 +2,36 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
-import { Button } from "@/components/deuna";
+import { HeroBanner } from "@/components/deuna";
 
 /**
  * Desafíos — listing of all active challenges for the shopkeeper.
  *
- * Each card is its own entry point that deep-links into a detail
- * screen at `/desafios/{slug}`. The third card is a "sponsored"
- * challenge (Alpina) that shows the partner badge.
+ * Each card IS the CTA: tapping any card deep-links into
+ * `/desafios/{slug}`. There's no bottom "Empezar" button because the
+ * listing has no single "winning" challenge — the shopkeeper picks
+ * whichever row they want to work on. The third card is a
+ * "sponsored" challenge (Alpina) that shows the partner badge.
  */
 export default function DesafiosScreen() {
-  const router = useRouter();
-
   return (
-    <div className="flex min-h-screen flex-col bg-white">
-      {/* Hero — lavender card with the trophy mascot. The Beneficios
-          tab in the bottom nav already lights up here, so the back
-          arrow that used to live in the top-left corner is gone: the
-          shopkeeper navigates between tabs via the navbar instead. */}
-      <section className="relative h-[202px] w-full overflow-hidden bg-gradient-to-b from-[#f6eeff] to-[#e7dcf2] pt-[max(env(safe-area-inset-top),0.5rem)]">
-        <div className="relative flex h-full items-center">
-          <div className="relative h-[175px] w-[151px] shrink-0 pl-3">
-            <Image
-              src="/assets/desafios/trophy-mascot.png"
-              alt="Mascota Deuna con un trofeo"
-              fill
-              sizes="151px"
-              className="object-contain"
-              priority
-            />
-          </div>
-          <p className="pr-4 text-[22px] font-extrabold leading-[26px] text-primary">
-            Gana beneficios cumpliendo desafíos
-          </p>
-        </div>
-      </section>
+    // Locked-height shell: viewport minus the bottom nav, with
+    // `overflow-hidden` so neither the page nor the cards can scroll.
+    // The hero stays at its fixed 180px and the missions list flexes
+    // into the remaining space, sized exactly so the three cards
+    // anchor in place — no rubber-band, no scroll, no movement.
+    <div className="flex h-[calc(100dvh-var(--app-bottom-nav-height))] flex-col overflow-hidden bg-white">
+      <HeroBanner
+        imageSrc="/assets/desafios/trophy-mascot.png"
+        imageAlt="Mascota Deuna con un trofeo"
+        imageWidth={140}
+        imageHeight={160}
+        height={180}
+        title="Gana beneficios cumpliendo desafíos"
+      />
 
-      {/* Cards */}
-      <div className="flex flex-1 flex-col gap-4 px-4 pt-4">
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden px-4 pt-3 pb-3">
         <DesafioCard
           slug="dos"
           title="¡Estás en el puesto #3 de comercios con más favoritos de Quito!"
@@ -63,15 +53,6 @@ export default function DesafiosScreen() {
             name: "Alpina",
             logoSrc: "/assets/alpina/logo.png",
           }}
-        />
-      </div>
-
-      {/* Sticky CTA */}
-      <div className="sticky bottom-(--app-bottom-nav-height) mt-6 border-t border-divider bg-surface-alt px-4 py-3">
-        <Button
-          label="Empezar"
-          size="lg"
-          onClick={() => router.push("/desafios/uno")}
         />
       </div>
     </div>

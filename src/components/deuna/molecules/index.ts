@@ -12,6 +12,9 @@ export type { BarChartDatum, BarChartProps } from "./BarChart";
 export { Card } from "./Card";
 export type { CardProps } from "./Card";
 
+export { HeroBanner } from "./HeroBanner";
+export type { HeroBannerProps } from "./HeroBanner";
+
 export { NewsCard } from "./NewsCard";
 export type {
   NewsCardOrientation,

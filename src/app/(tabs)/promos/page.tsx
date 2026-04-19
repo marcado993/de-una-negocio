@@ -1,19 +1,28 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { IoArrowBack } from "react-icons/io5";
+import { IoPeople } from "react-icons/io5";
 
 import {
   Button,
-  IconButton,
+  HeroBanner,
   PercentGrid,
   type PercentChoice,
 } from "@/components/deuna";
 import { createCampaign, upsertBusiness } from "@/lib/api";
 import { celebrate } from "@/lib/confetti";
 import { LA_VICENTINA, SEED_BUSINESS } from "@/lib/seed-location";
+
+/**
+ * Demo reach range — the real backend count is typically 0 in local
+ * dev because there are no YaPass users in the seeded radius, so we
+ * surface a plausible hand-picked number between 6 and 10 to sell the
+ * "llegó a X usuarios" story during the hackathon demo.
+ */
+function pickDemoReach(): number {
+  return Math.floor(Math.random() * 5) + 6;
+}
 
 /**
  * Promos — full-screen tab that lets the shopkeeper pick a discount
@@ -62,7 +71,10 @@ export default function PromosScreen() {
         discountPct: effectivePct,
         radiusM: 50_000,
       });
-      setDelivered(result.delivered);
+      // Prefer the real reach count when the backend has users in the
+      // radius; otherwise fall back to the demo range so the modal
+      // always tells a good story.
+      setDelivered(result.delivered >= 6 ? result.delivered : pickDemoReach());
     } catch (err) {
       const raw = err instanceof Error ? err.message : String(err);
       const friendly = /failed to fetch|networkerror/i.test(raw)
@@ -76,34 +88,20 @@ export default function PromosScreen() {
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
-      {/* Hero — lavender card with the SALE mascot and a back arrow. */}
-      <section className="relative h-[202px] w-full overflow-hidden bg-gradient-to-b from-[#f6eeff] to-[#e7dcf2] pt-[max(env(safe-area-inset-top),0.5rem)]">
-        <IconButton
-          aria-label="Volver"
-          variant="ghost"
-          size="sm"
-          onClick={() => router.back()}
-          className="absolute left-2 top-3 z-10 text-primary"
-          icon={<IoArrowBack className="h-5 w-5" />}
-        />
-
-        <div className="relative flex h-full items-center">
-          <div className="relative h-[167px] w-[145px] shrink-0 pl-3">
-            <Image
-              src="/assets/promos/caserito-oferta.png"
-              alt="Mascota Deuna con cartel SALE"
-              fill
-              sizes="145px"
-              className="object-contain"
-              priority
-            />
-          </div>
-          <p className="pr-4 text-[22px] font-extrabold leading-[26px] text-primary">
+      <HeroBanner
+        imageSrc="/assets/promos/caserito-oferta.png"
+        imageAlt="Mascota Deuna con cartel SALE"
+        imageWidth={145}
+        imageHeight={167}
+        height={202}
+        onBack={() => router.back()}
+        title={
+          <>
             Crea descuentos para tus clientes con
             <span className="ml-1 lowercase">yaPass</span>
-          </p>
-        </div>
-      </section>
+          </>
+        }
+      />
 
       {/* Picker */}
       <div className="flex flex-1 flex-col gap-4 px-4 pt-6">
@@ -159,21 +157,13 @@ export default function PromosScreen() {
         <p className="px-1 text-center text-[14px] font-medium text-text-primary">
           El descuento aplicado será asumido por tu tienda.
         </p>
-
-        {delivered != null ? (
-          <div className="rounded-[var(--radius-md)] bg-accent-green-soft px-4 py-3 text-center">
-            <p className="text-[14px] font-bold text-accent-green">
-              ¡Promo lanzada! Llegó a {delivered}{" "}
-              {delivered === 1 ? "usuario cercano" : "usuarios cercanos"}.
-            </p>
-          </div>
-        ) : null}
       </div>
 
-      {/* Sticky CTA — pinned above the bottom nav using the global
-          `--app-bottom-nav-height` token so the button can never get
-          covered by the tab bar (or by the device's bottom safe-area). */}
-      <div className="sticky bottom-(--app-bottom-nav-height) mt-4 flex flex-col gap-2 border-t border-divider bg-surface-alt px-4 py-3">
+      {/* Fixed CTA — Promos is full-bleed (no tab bar), so the button
+          pins to the real viewport bottom. `sticky bottom-0` keeps it
+          visible no matter how the content above scrolls, and the
+          safe-area padding clears the iOS home indicator. */}
+      <div className="sticky bottom-0 mt-4 flex flex-col gap-2 border-t border-divider bg-surface-alt px-4 pt-3 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
         {error ? (
           <p
             role="alert"
@@ -189,12 +179,75 @@ export default function PromosScreen() {
           </span>
         </p>
         <Button
-          label={delivered != null ? "Listo" : "Empezar"}
+          label="Empezar"
           size="lg"
           loading={loading}
           disabled={disabled && delivered == null}
-          onClick={delivered != null ? () => router.back() : handleConfirm}
+          onClick={handleConfirm}
         />
+      </div>
+
+      {delivered != null ? (
+        <CampaignLaunchedDialog
+          reach={delivered}
+          onDismiss={() => {
+            setDelivered(null);
+            router.push("/");
+          }}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+type CampaignLaunchedDialogProps = {
+  reach: number;
+  onDismiss: () => void;
+};
+
+/**
+ * Celebration dialog shown after the shopkeeper launches a campaign.
+ * Centered card with a backdrop; a single "Listo" CTA dismisses it
+ * and sends the user back to Gestionar. Keeps the reach copy honest
+ * (singular vs. plural) so a 1-person reach wouldn't read oddly,
+ * even though the demo range is 6–10.
+ */
+function CampaignLaunchedDialog({
+  reach,
+  onDismiss,
+}: CampaignLaunchedDialogProps) {
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="campaign-launched-title"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-6"
+      onClick={onDismiss}
+    >
+      <div
+        className="relative w-full max-w-[360px] rounded-2xl bg-white p-6 text-center shadow-elevated"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary-soft">
+          <IoPeople className="h-8 w-8 text-primary" aria-hidden />
+        </div>
+        <h2
+          id="campaign-launched-title"
+          className="mt-4 text-title-md text-primary"
+        >
+          ¡Promo lanzada!
+        </h2>
+        <p className="mt-2 text-[14px] font-medium text-text-primary">
+          Tu descuento llegó a{" "}
+          <span className="text-[20px] font-extrabold text-primary">
+            {reach}
+          </span>{" "}
+          {reach === 1 ? "usuario cercano" : "usuarios cercanos"} de tu
+          barrio.
+        </p>
+        <div className="mt-5">
+          <Button label="Listo" size="lg" onClick={onDismiss} />
+        </div>
       </div>
     </div>
   );

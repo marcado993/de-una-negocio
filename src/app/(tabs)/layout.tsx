@@ -6,11 +6,16 @@ import { AdminAccessGate, AppBottomNav } from "@/components/deuna";
 
 /**
  * Routes that take over the full viewport and therefore should NOT
- * render the bottom tab bar (e.g. the Desafío detail screens, which
- * have their own "Volver" button at the bottom). Match by exact path
- * or by `path/.*` prefix.
+ * render the bottom tab bar. These are entered from Gestionar with
+ * their own "Volver" button and don't belong to any tab, so showing
+ * the bar would wrongly light up a tab (e.g. `/promos` used to
+ * highlight Beneficios) and steal vertical space from the CTA.
  */
-const FULL_BLEED_PATHS: readonly string[] = ["/desafios/"];
+const FULL_BLEED_PATHS: readonly string[] = [
+  "/desafios/", // challenge detail (/desafios/uno, etc.) — the listing keeps the nav
+  "/promos",
+  "/estadisticas",
+];
 
 function isFullBleed(pathname: string | null): boolean {
   if (!pathname) return false;

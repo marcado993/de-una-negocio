@@ -49,7 +49,11 @@ const TABS: readonly TabDef[] = [
     id: "beneficios",
     label: "Beneficios",
     href: "/desafios",
-    matchPrefixes: ["/desafios", "/promos", "/estadisticas"],
+    // Beneficios only owns `/desafios/*`. `/promos` and
+    // `/estadisticas` are launched from Gestionar (Inicio) — they're
+    // full-bleed screens with their own back button, so they don't
+    // belong to any tab and must not steal the highlight.
+    matchPrefixes: ["/desafios"],
     ActiveIcon: IoGift,
     InactiveIcon: IoGiftOutline,
   },
